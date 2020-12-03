@@ -1,0 +1,2 @@
+# equilibrioSGD
+ equilibrioSGD
