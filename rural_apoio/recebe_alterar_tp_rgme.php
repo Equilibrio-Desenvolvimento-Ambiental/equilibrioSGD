@@ -1,0 +1,41 @@
+﻿<?php 
+	error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED);
+	include"../includes/conecta.php";
+	$projeto = 4;
+	session_start();
+	if(!isset($_SESSION['user']) || !isset($_SESSION['login']) || !isset($_SESSION['senha']) || !isset($_SESSION['nome']) || !isset($_SESSION['nivel'])) {
+		echo "Esta área é restrita. Clique ";
+		echo "<a href=\"../index.html\">aqui</a>";
+		echo " para fazer o LOGIN.";
+		exit;
+	} else {
+		$sql_permissao = mysql_query("select * from TAB_MAIN_USERS_PROJECTS where ID_PROJETO = '$projeto' and ID_USER = '$_SESSION[user]'", $db);
+		$num_busca = mysql_num_rows($sql_permissao);
+		if ($num_busca == 0) {
+			echo "Esta área é restrita. Clique ";
+			echo "<a href=\"../index.html\">aqui</a>";
+			echo " para fazer o LOGIN.";
+			exit;
+		} else {
+			function reverse_date( $date ){
+				return ( strstr( $date, '-' ) ) ? implode( '/', array_reverse( explode( '-', $date ) ) ) : implode( '-', array_reverse( explode(                '/', $date ) )      );
+			}
+			$id = $_GET['id'];
+			$DESCRICAO = $_POST['DESCRICAO'];
+			$DATA_INICIAL = reverse_date($_POST['DATA_INICIAL']);
+			$DATA_FINAL = reverse_date($_POST['DATA_FINAL']);
+			$ANO = $_POST['ANO'];
+			$MES = $_POST['MES'];
+			$sql = mysql_query("update TAB_APOIO_RGME set DESCRICAO = '$DESCRICAO', DATA_INICIAL = '$DATA_INICIAL', DATA_FINAL = '$DATA_FINAL', ANO = '$ANO', MES = '$MES' where ID = '$id'", $db) or die(mysql_error());
+		/*
+			echo"<script language=\"JavaScript\">
+				alert('Alterado com sucesso!');
+				</script>";
+		*/				
+			echo"<script language=\"JavaScript\">
+				location.href=\"listar_tp_rgme.php\";
+				</script>";
+		}
+	}
+?>
+<?php require_once("includes/header-recebe.php");?>

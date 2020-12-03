@@ -1,0 +1,171 @@
+<?php 
+	error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED);
+	include"../includes/conecta.php";
+	$projeto = 7;
+	session_start();
+	if(!isset($_SESSION['user']) || !isset($_SESSION['login']) || !isset($_SESSION['senha']) || !isset($_SESSION['nome']) || !isset($_SESSION['nivel'])) {
+		echo "Esta área é restrita. Clique ";
+		echo "<a href=\"../index.html\">aqui</a>";
+		echo " para fazer o LOGIN.";
+		exit;
+	} else {
+		$sql_permissao = mysql_query("select * from TAB_MAIN_USERS_PROJECTS where ID_PROJETO = '$projeto' and ID_USER = '$_SESSION[user]'", $db);
+		$num_busca = mysql_num_rows($sql_permissao);
+		if ($num_busca == 0) {
+			echo "Esta área é restrita. Clique ";
+			echo "<a href=\"../index.html\">aqui</a>";
+			echo " para fazer o LOGIN.";
+			exit;
+		} else {
+			function reverse_date( $date ){
+				return ( strstr( $date, '-' ) ) ? implode( '/', array_reverse( explode( '-', $date ) ) ) : implode( '-', array_reverse( explode(                '/', $date ) )      );
+			}
+			$id_familia = $_GET['id_familia'];
+			$FISH_PERFIL_VISITA = $_POST['FISH_PERFIL_VISITA'];
+			$FISH_PERFIL_APLIC = $_POST['FISH_PERFIL_APLIC'];
+			$FISH_PERFIL_QUEST = $_POST['FISH_PERFIL_QUEST'];
+			$FISH_PERFIL_PESQUISADOR = mb_convert_case($_POST['FISH_PERFIL_PESQUISADOR'], MB_CASE_UPPER, 'UTF-8');
+			$FISH_PERFIL_TAB = $_POST['FISH_PERFIL_TAB'];
+			$FISH_PERFIL_RELAT = $_POST['FISH_PERFIL_RELAT'];
+			$FISH_PERFIL_OBS = mb_convert_case($_POST['FISH_PERFIL_OBS'], MB_CASE_UPPER, 'UTF-8');
+			$FISH_PERFIL_QTDEV_LOCO = $_POST['FISH_PERFIL_QTDEV_LOCO'];
+			$FISH_PERFIL_QTDEV_FONE = $_POST['FISH_PERFIL_QTDEV_FONE'];
+			$FISH_PERFIL_P_BARCO = $_POST['FISH_PERFIL_P_BARCO'];
+			$FISH_PERFIL_P_MOTOR = $_POST['FISH_PERFIL_P_MOTOR'];
+			$FISH_PERFIL_P_REPAROS = $_POST['FISH_PERFIL_P_REPAROS'];
+			$FISH_PERFIL_P_TRALHA = $_POST['FISH_PERFIL_P_TRALHA'];
+			$FISH_PERFIL_P_CESTA = $_POST['FISH_PERFIL_P_CESTA'];
+			$FISH_PERFIL_P_RENDA = $_POST['FISH_PERFIL_P_RENDA'];
+			$FISH_PERFIL_P_PROJ = $_POST['FISH_PERFIL_P_PROJ'];
+			$FISH_PERFIL_P_ATEND = $_POST['FISH_PERFIL_P_ATEND'];
+			$FISH_PERFIL_P_OUTROS = mb_convert_case($_POST['FISH_PERFIL_P_OUTROS'], MB_CASE_UPPER, 'UTF-8');
+			$FISH_PERFIL_E_COOP = $_POST['FISH_PERFIL_E_COOP'];
+			$FISH_PERFIL_E_BARCO = $_POST['FISH_PERFIL_E_BARCO'];
+			$FISH_PERFIL_E_MOTOR = $_POST['FISH_PERFIL_E_MOTOR'];
+			$FISH_PERFIL_E_REPAROS = $_POST['FISH_PERFIL_E_REPAROS'];
+			$FISH_PERFIL_E_TRALHA = $_POST['FISH_PERFIL_E_TRALHA'];
+			$FISH_PERFIL_E_TRALHA_TP = '0';
+			$FISH_PERFIL_E_CESTA = $_POST['FISH_PERFIL_E_CESTA'];
+			$FISH_PERFIL_E_RENDA = $_POST['FISH_PERFIL_E_RENDA'];
+			$FISH_PERFIL_E_PROJ = $_POST['FISH_PERFIL_E_PROJ'];
+			$FISH_PERFIL_E_ATEND = $_POST['FISH_PERFIL_E_ATEND'];
+			$FISH_PERFIL_E_OUTROS = mb_convert_case($_POST['FISH_PERFIL_E_OUTROS'], MB_CASE_UPPER, 'UTF-8');
+			$FISH_PERFIL_TRAN_RELATO = $_POST['FISH_PERFIL_TRAN_RELATO'];
+			$FISH_PERFIL_TRAN_ATEND = $_POST['FISH_PERFIL_TRAN_ATEND'];
+			$FISH_PERFIL_TRAN_RESUMO = $_POST['FISH_PERFIL_TRAN_RESUMO'];
+			$FISH_PERFIL_TRAN_ENCAM = $_POST['FISH_PERFIL_TRAN_ENCAM'];
+			$FISH_PERFIL_DEVOLUT = $_POST['FISH_PERFIL_DEVOLUT'];
+			$FISH_PERFIL_DEVOLUT_ACEITE = $_POST['FISH_PERFIL_DEVOLUT_ACEITE'];
+			$FISH_PERFIL_E_CESTA_ENTQT = $_POST['FISH_PERFIL_E_CESTA_ENTQT'];
+			$FISH_PERFIL_E_CESTA_ENT01 = $_POST['FISH_PERFIL_E_CESTA_ENT01'];
+			$FISH_PERFIL_E_CESTA_ENT02 = $_POST['FISH_PERFIL_E_CESTA_ENT02'];
+			$FISH_PERFIL_E_CESTA_ENT03 = $_POST['FISH_PERFIL_E_CESTA_ENT03'];
+			$FISH_PERFIL_E_CESTA_ENT04 = $_POST['FISH_PERFIL_E_CESTA_ENT04'];
+			$FISH_PERFIL_E_BARCO_ENT = $_POST['FISH_PERFIL_E_BARCO_ENT'];
+			$FISH_PERFIL_E_MOTOR_ENT = $_POST['FISH_PERFIL_E_MOTOR_ENT'];
+			$FISH_PERFIL_E_TRALHA_ENT = $_POST['FISH_PERFIL_E_TRALHA_ENT'];
+			$FISH_PERFIL_E_TRALHA_DESC = mb_convert_case($_POST['FISH_PERFIL_E_TRALHA_DESC'], MB_CASE_UPPER, 'UTF-8');
+			$FISH_PERFIL_STATUSATEND = $_POST['FISH_PERFIL_STATUSATEND'];
+			
+			$comandoSql = "UPDATE TAB_FISH_PERFILENT SET FISH_PERFIL_VISITA = '$FISH_PERFIL_VISITA', FISH_PERFIL_APLIC = '$FISH_PERFIL_APLIC', FISH_PERFIL_TAB = '$FISH_PERFIL_TAB', FISH_PERFIL_RELAT = '$FISH_PERFIL_RELAT', FISH_PERFIL_OBS = '$FISH_PERFIL_OBS', FISH_PERFIL_P_BARCO = '$FISH_PERFIL_P_BARCO', FISH_PERFIL_P_MOTOR = '$FISH_PERFIL_P_MOTOR', FISH_PERFIL_P_REPAROS = '$FISH_PERFIL_P_REPAROS', FISH_PERFIL_P_TRALHA = '$FISH_PERFIL_P_TRALHA', FISH_PERFIL_P_CESTA = '$FISH_PERFIL_P_CESTA', FISH_PERFIL_P_RENDA = '$FISH_PERFIL_P_RENDA', FISH_PERFIL_P_PROJ = '$FISH_PERFIL_P_PROJ', FISH_PERFIL_P_ATEND = '$FISH_PERFIL_P_ATEND', FISH_PERFIL_P_OUTROS = '$FISH_PERFIL_P_OUTROS', FISH_PERFIL_E_COOP = '$FISH_PERFIL_E_COOP', FISH_PERFIL_E_BARCO = '$FISH_PERFIL_E_BARCO', FISH_PERFIL_E_MOTOR = '$FISH_PERFIL_E_MOTOR', FISH_PERFIL_E_REPAROS = '$FISH_PERFIL_E_REPAROS', FISH_PERFIL_E_TRALHA = '$FISH_PERFIL_E_TRALHA', FISH_PERFIL_E_CESTA = '$FISH_PERFIL_E_CESTA', FISH_PERFIL_E_RENDA = '$FISH_PERFIL_E_RENDA', FISH_PERFIL_E_PROJ = '$FISH_PERFIL_E_PROJ', FISH_PERFIL_E_ATEND = '$FISH_PERFIL_E_ATEND', FISH_PERFIL_E_OUTROS = '$FISH_PERFIL_E_OUTROS', FISH_PERFIL_TRAN_RELATO = '$FISH_PERFIL_TRAN_RELATO', FISH_PERFIL_TRAN_ATEND = '$FISH_PERFIL_TRAN_ATEND', FISH_PERFIL_TRAN_RESUMO = '$FISH_PERFIL_TRAN_RESUMO', FISH_PERFIL_TRAN_ENCAM = '$FISH_PERFIL_TRAN_ENCAM', FISH_PERFIL_DEVOLUT = '$FISH_PERFIL_DEVOLUT', FISH_PERFIL_DEVOLUT_ACEITE = '$FISH_PERFIL_DEVOLUT_ACEITE', FISH_PERFIL_QTDEV_LOCO = '$FISH_PERFIL_QTDEV_LOCO', FISH_PERFIL_QTDEV_FONE = '$FISH_PERFIL_QTDEV_FONE', FISH_PERFIL_E_TRALHA_TP = '$FISH_PERFIL_E_TRALHA_TP', FISH_PERFIL_E_CESTA_ENTQT = '$FISH_PERFIL_E_CESTA_ENTQT', FISH_PERFIL_E_CESTA_ENT01 = '$FISH_PERFIL_E_CESTA_ENT01', FISH_PERFIL_E_CESTA_ENT02 = '$FISH_PERFIL_E_CESTA_ENT02', FISH_PERFIL_E_CESTA_ENT03 = '$FISH_PERFIL_E_CESTA_ENT03', FISH_PERFIL_E_CESTA_ENT04 = '$FISH_PERFIL_E_CESTA_ENT04', FISH_PERFIL_E_BARCO_ENT = '$FISH_PERFIL_E_BARCO_ENT', FISH_PERFIL_E_MOTOR_ENT = '$FISH_PERFIL_E_MOTOR_ENT', FISH_PERFIL_E_TRALHA_ENT = '$FISH_PERFIL_E_TRALHA_ENT', FISH_PERFIL_E_TRALHA_DESC = '$FISH_PERFIL_E_TRALHA_DESC', FISH_PERFIL_STATUSATEND = '$FISH_PERFIL_STATUSATEND', ";
+
+			if(!empty($_POST['FISH_PERFIL_DTVISITA'])){
+				$FISH_PERFIL_DTVISITA = reverse_date($_POST['FISH_PERFIL_DTVISITA']);
+				$comandoSql = $comandoSql." FISH_PERFIL_DTVISITA = '$FISH_PERFIL_DTVISITA', ";
+			} else {
+				$comandoSql = $comandoSql." FISH_PERFIL_DTVISITA = NULL, ";
+			}			
+			if(!empty($_POST['FISH_PERFIL_DTAPLIC'])){
+				$FISH_PERFIL_DTAPLIC = reverse_date($_POST['FISH_PERFIL_DTAPLIC']);
+				$comandoSql = $comandoSql." FISH_PERFIL_DTAPLIC = '$FISH_PERFIL_DTAPLIC', ";
+			} else {
+				$comandoSql = $comandoSql." FISH_PERFIL_DTAPLIC = NULL, ";
+			}			
+			if(!empty($_POST['FISH_PERFIL_DTTAB'])){
+				$FISH_PERFIL_DTTAB = reverse_date($_POST['FISH_PERFIL_DTTAB']);
+				$comandoSql = $comandoSql." FISH_PERFIL_DTTAB = '$FISH_PERFIL_DTTAB', ";
+			} else {
+				$comandoSql = $comandoSql." FISH_PERFIL_DTTAB = NULL, ";
+			}			
+			if(!empty($_POST['FISH_PERFIL_DTRELAT'])){
+				$FISH_PERFIL_DTRELAT = reverse_date($_POST['FISH_PERFIL_DTRELAT']);
+				$comandoSql = $comandoSql." FISH_PERFIL_DTRELAT = '$FISH_PERFIL_DTRELAT', ";
+			} else {
+				$comandoSql = $comandoSql." FISH_PERFIL_DTRELAT = NULL, ";
+			}			
+			if(!empty($_POST['FISH_PERFIL_DTDEVOLUT'])){
+				$FISH_PERFIL_DTDEVOLUT = reverse_date($_POST['FISH_PERFIL_DTDEVOLUT']);
+				$comandoSql = $comandoSql." FISH_PERFIL_DTDEVOLUT = '$FISH_PERFIL_DTDEVOLUT', ";
+			} else {
+				$comandoSql = $comandoSql." FISH_PERFIL_DTDEVOLUT = NULL, ";
+			}			
+			if(!empty($_POST['FISH_PERFIL_QUEST'])){
+				$FISH_PERFIL_QUEST = $_POST['FISH_PERFIL_QUEST'];
+				$comandoSql = $comandoSql." FISH_PERFIL_QUEST = '$FISH_PERFIL_QUEST', ";
+			} else {
+				$comandoSql = $comandoSql." FISH_PERFIL_QUEST = NULL, ";
+			}			
+			if(!empty($_POST['FISH_PERFIL_PESQUISADOR'])){
+				$FISH_PERFIL_PESQUISADOR = $_POST['FISH_PERFIL_PESQUISADOR'];
+				$comandoSql = $comandoSql." FISH_PERFIL_PESQUISADOR = '$FISH_PERFIL_PESQUISADOR', ";
+			} else {
+				$comandoSql = $comandoSql." FISH_PERFIL_PESQUISADOR = NULL, ";
+			}			
+			if(!empty($_POST['FISH_PERFIL_E_CESTA_ENT01DT'])){
+				$FISH_PERFIL_E_CESTA_ENT01DT = reverse_date($_POST['FISH_PERFIL_E_CESTA_ENT01DT']);
+				$comandoSql = $comandoSql." FISH_PERFIL_E_CESTA_ENT01DT = '$FISH_PERFIL_E_CESTA_ENT01DT', ";
+			} else {
+				$comandoSql = $comandoSql." FISH_PERFIL_E_CESTA_ENT01DT = NULL, ";
+			}			
+			if(!empty($_POST['FISH_PERFIL_E_CESTA_ENT02DT'])){
+				$FISH_PERFIL_E_CESTA_ENT02DT = reverse_date($_POST['FISH_PERFIL_E_CESTA_ENT02DT']);
+				$comandoSql = $comandoSql." FISH_PERFIL_E_CESTA_ENT02DT = '$FISH_PERFIL_E_CESTA_ENT02DT', ";
+			} else {
+				$comandoSql = $comandoSql." FISH_PERFIL_E_CESTA_ENT02DT = NULL, ";
+			}			
+			if(!empty($_POST['FISH_PERFIL_E_CESTA_ENT03DT'])){
+				$FISH_PERFIL_E_CESTA_ENT03DT = reverse_date($_POST['FISH_PERFIL_E_CESTA_ENT03DT']);
+				$comandoSql = $comandoSql." FISH_PERFIL_E_CESTA_ENT03DT = '$FISH_PERFIL_E_CESTA_ENT03DT', ";
+			} else {
+				$comandoSql = $comandoSql." FISH_PERFIL_E_CESTA_ENT03DT = NULL, ";
+			}			
+			if(!empty($_POST['FISH_PERFIL_E_CESTA_ENT04DT'])){
+				$FISH_PERFIL_E_CESTA_ENT04DT = reverse_date($_POST['FISH_PERFIL_E_CESTA_ENT04DT']);
+				$comandoSql = $comandoSql." FISH_PERFIL_E_CESTA_ENT04DT = '$FISH_PERFIL_E_CESTA_ENT04DT', ";
+			} else {
+				$comandoSql = $comandoSql." FISH_PERFIL_E_CESTA_ENT04DT = NULL, ";
+			}			
+			if(!empty($_POST['FISH_PERFIL_E_BARCO_ENTDT'])){
+				$FISH_PERFIL_E_BARCO_ENTDT = reverse_date($_POST['FISH_PERFIL_E_BARCO_ENTDT']);
+				$comandoSql = $comandoSql." FISH_PERFIL_E_BARCO_ENTDT = '$FISH_PERFIL_E_BARCO_ENTDT', ";
+			} else {
+				$comandoSql = $comandoSql." FISH_PERFIL_E_BARCO_ENTDT = NULL, ";
+			}			
+			if(!empty($_POST['FISH_PERFIL_E_MOTOR_ENTDT'])){
+				$FISH_PERFIL_E_MOTOR_ENTDT = reverse_date($_POST['FISH_PERFIL_E_MOTOR_ENTDT']);
+				$comandoSql = $comandoSql." FISH_PERFIL_E_MOTOR_ENTDT = '$FISH_PERFIL_E_MOTOR_ENTDT', ";
+			} else {
+				$comandoSql = $comandoSql." FISH_PERFIL_E_MOTOR_ENTDT = NULL, ";
+			}			
+			if(!empty($_POST['FISH_PERFIL_E_TRALHA_ENTDT'])){
+				$FISH_PERFIL_E_TRALHA_ENTDT = reverse_date($_POST['FISH_PERFIL_E_TRALHA_ENTDT']);
+				$comandoSql = $comandoSql." FISH_PERFIL_E_TRALHA_ENTDT = '$FISH_PERFIL_E_TRALHA_ENTDT' ";
+			} else {
+				$comandoSql = $comandoSql." FISH_PERFIL_E_TRALHA_ENTDT = NULL ";
+			}			
+
+			$comandoSql = $comandoSql." WHERE FISH_FAM_ID = '$id_familia';";
+//			echo $comandoSql;
+			$sql = mysql_query($comandoSql, $db) or die(mysql_error());			
+		/*
+			echo"<script language=\"JavaScript\">
+				alert('Inserido com sucesso!');
+				</script>";
+		*/				
+			echo"<script language=\"JavaScript\">
+				location.href=\"alterar_fish_familias.php?id_familia=$id_familia\";
+				</script>";
+		}
+	}
+?>
+<?php require_once("includes/header-recebe.php");?>

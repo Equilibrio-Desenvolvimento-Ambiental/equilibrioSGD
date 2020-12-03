@@ -1,0 +1,118 @@
+﻿<?php
+	error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED);
+	include"../includes/conecta.php";
+	$projeto = 7;
+	session_start();
+	if(!isset($_SESSION['user']) || !isset($_SESSION['login']) || !isset($_SESSION['senha']) || !isset($_SESSION['nome']) || !isset($_SESSION['nivel'])) {
+		echo "Esta área é restrita. Clique ";
+		echo "<a href=\"../index.html\">aqui</a>";
+		echo " para fazer o LOGIN.";
+		exit;
+	} else {
+		$sql_permissao = mysql_query("SELECT * FROM TAB_MAIN_USERS_PROJECTS where ID_PROJETO = '$projeto' and ID_USER = '$_SESSION[user]'", $db) or die(mysql_error());
+		$num_busca = mysql_num_rows($sql_permissao);
+		if ($num_busca == 0) {
+			echo "Esta área é restrita. Clique ";
+			echo "<a href=\"../index.html\">aqui</a>";
+			echo " para fazer o LOGIN.";
+			exit;
+		} else {
+			$tabela = '<table border=1>';
+			$tabela .= '<thead>';
+			$tabela .= '<tr>';
+			$tabela .= '<th align="center"><b>FISH_FAM_ID</b></th>';
+			$tabela .= '<th align="center"><b>FISH_FCOMP_NOME</b></th>';
+			$tabela .= '<th align="center"><b>FISH_FCOMP_RG_NUMERO</b></th>';
+			$tabela .= '<th align="center"><b>FISH_FCOMP_CPF_NUMERO</b></th>';
+			$tabela .= '<th align="center"><b>FISH_FCOMP_PARENTESCO_DESC</b></th>';
+			$tabela .= '<th align="center"><b>FISH_COOP_ATIVECON_PRINC_DESC</b></th>';
+			$tabela .= '<th align="center"><b>FISH_COOP_ATIVECON_SECOND_DESC</b></th>';
+			$tabela .= '<th align="center"><b>FISH_COOP_ATIVPESCA_DESC</b></th>';
+			$tabela .= '<th align="center"><b>FISH_COOP_ATIVPESCATEMPO</b></th>';
+			$tabela .= '<th align="center"><b>FISH_COOP_ATIVPESCAUNIT_DESC</b></th>';
+			$tabela .= '<th align="center"><b>FISH_COOP_ATIVPESCATIPO_DESC</b></th>';
+			$tabela .= '<th align="center"><b>FISH_FAM_TELEFONES</b></th>';
+			$tabela .= '<th align="center"><b>FISH_FAM_ENDURB_LOGR</b></th>';
+			$tabela .= '<th align="center"><b>FISH_FAM_ENDURB_LOCAL_DESC</b></th>';
+			$tabela .= '<th align="center"><b>FISH_FAM_ENDURB_MUNIC_DESC</b></th>';
+			$tabela .= '<th align="center"><b>FISH_FAM_ENDURB_COMPL</b></th>';
+			$tabela .= '<th align="center"><b>FISH_FAM_ENDURB_USO_DESC</b></th>';
+			$tabela .= '<th align="center"><b>FISH_FAM_ENDRUR_LOGR</b></th>';
+			$tabela .= '<th align="center"><b>FISH_FAM_ENDRUR_LOCAL_DESC</b></th>';
+			$tabela .= '<th align="center"><b>FISH_FAM_ENDRUR_MUNIC_DESC</b></th>';
+			$tabela .= '<th align="center"><b>FISH_FAM_ENDRUR_COMPL</b></th>';
+			$tabela .= '<th align="center"><b>FISH_FAM_ENDRUR_USO_DESC</b></th>';
+			$tabela .= '<th align="center"><b>FISH_COOCAR_PESCANDO_DESC</b></th>';
+			$tabela .= '<th align="center"><b>FISH_COOCAR_MOTIVO</b></th>';
+			$tabela .= '<th align="center"><b>FISH_COOCAR_SOZINHO_DESC</b></th>';
+			$tabela .= '<th align="center"><b>FISH_COOCAR_QTS_PESSOAS</b></th>';
+			$tabela .= '<th align="center"><b>FISH_COOCAR_QTS_FAMILIA</b></th>';
+			$tabela .= '<th align="center"><b>FISH_COOCAR_ORNAMENTAL_DESC</b></th>';
+			$tabela .= '<th align="center"><b>FISH_COOCAR_CONSUMO_DESC</b></th>';
+			$tabela .= '<th align="center"><b>FISH_COOCAR_DESTINO_DESC</b></th>';
+			$tabela .= '<th align="center"><b>FISH_COOCAR_DIAS</b></th>';
+			$tabela .= '<th align="center"><b>FISH_COOCAR_VEZES</b></th>';
+			$tabela .= '<th align="center"><b>FISH_COOCAR_LOCAIS</b></th>';
+			$tabela .= '<th align="center"><b>FISH_COOCAR_COMERCIO</b></th>';
+			$tabela .= '<th align="center"><b>FISH_COOCAR_DESP_COMBS</b></th>';
+			$tabela .= '<th align="center"><b>FISH_COOCAR_DESP_GELO</b></th>';
+			$tabela .= '<th align="center"><b>FISH_COOCAR_DESP_RANCHO</b></th>';
+			$tabela .= '<th align="center"><b>FISH_COOCAR_DESP_OUTROS</b></th>';
+			$tabela .= '</tr>';
+			$tabela .= '</thead>';
+			$tabela .= '<tbody>';
+			$sql = mysql_query("SELECT TAB_FISH_FAMILIAS.FISH_FAM_ID, TAB_FISH_FAMILIAS_COMPOSICAO.FISH_FCOMP_NOME, TAB_FISH_FAMILIAS_COMPOSICAO.FISH_FCOMP_RG_NUMERO, TAB_FISH_FAMILIAS_COMPOSICAO.FISH_FCOMP_CPF_NUMERO, TAB_APOIO_PARENTESCO.DESCRICAO AS FISH_FCOMP_PARENTESCO_DESC, TAB_APOIO_ATIVECONOMICA_PRINC.DESCRICAO AS FISH_COOP_ATIVECON_PRINC_DESC, TAB_APOIO_ATIVECONOMICA_SECOND.DESCRICAO AS FISH_COOP_ATIVECON_SECOND_DESC, TAB_APOIO_BOOLEANO_ATIVPESCA.DESCRICAO AS FISH_COOP_ATIVPESCA_DESC, TAB_FISH_COOP_ENTREVISTA.FISH_COOP_ATIVPESCATEMPO, TAB_APOIO_UNIDMED_TEMPO.DESCRICAO AS FISH_COOP_ATIVPESCAUNIT_DESC, TAB_APOIO_ATIVPESCA.DESCRICAO AS FISH_COOP_ATIVPESCATIPO_DESC, TAB_FISH_FAMILIAS.FISH_FAM_TELEFONES, TAB_FISH_FAMILIAS.FISH_FAM_ENDURB_LOGR, TAB_APOIO_BAIRROS.DESCRICAO AS FISH_FAM_ENDURB_LOCAL_DESC, TAB_APOIO_MUNICIPIOS_URBANO.DESCRICAO AS FISH_FAM_ENDURB_MUNIC_DESC, TAB_FISH_FAMILIAS.FISH_FAM_ENDURB_COMPL, TAB_APOIO_USOIMOVEL_URBANO.DESCRICAO AS FISH_FAM_ENDURB_USO_DESC, TAB_FISH_FAMILIAS.FISH_FAM_ENDRUR_LOGR, TAB_APOIO_LOCALIDADES.DESCRICAO AS FISH_FAM_ENDRUR_LOCAL_DESC, TAB_APOIO_MUNICIPIOS_RURAL.DESCRICAO AS FISH_FAM_ENDRUR_MUNIC_DESC, TAB_FISH_FAMILIAS.FISH_FAM_ENDRUR_COMPL, TAB_APOIO_USOIMOVEL_RURAL.DESCRICAO AS FISH_FAM_ENDRUR_USO_DESC, TAB_APOIO_BOOLEANO_PESCANDO.DESCRICAO AS FISH_COOCAR_PESCANDO_DESC, TAB_FISH_COOP_CARACTERIZACAO.FISH_COOCAR_MOTIVO, TAB_APOIO_BOOLEANO_SOZINHO.DESCRICAO AS FISH_COOCAR_SOZINHO_DESC, TAB_FISH_COOP_CARACTERIZACAO.FISH_COOCAR_QTS_PESSOAS, TAB_FISH_COOP_CARACTERIZACAO.FISH_COOCAR_QTS_FAMILIA, TAB_APOIO_BOOLEANO_ORNAMENTAL.DESCRICAO AS FISH_COOCAR_ORNAMENTAL_DESC, TAB_APOIO_BOOLEANO_CONSUMO.DESCRICAO AS FISH_COOCAR_CONSUMO_DESC, TAB_APOIO_PESCA_TIPO.DESCRICAO AS FISH_COOCAR_DESTINO_DESC, TAB_FISH_COOP_CARACTERIZACAO.FISH_COOCAR_DIAS, TAB_FISH_COOP_CARACTERIZACAO.FISH_COOCAR_VEZES, VIEW_FISH_COOCAR_LOCAIS.FISH_COOCAR_LOCAIS, VIEW_FISH_COOCAR_COMERCIO.FISH_COOCAR_COMERCIO, TAB_FISH_COOP_CARACTERIZACAO.FISH_COOCAR_DESP_COMBS, TAB_FISH_COOP_CARACTERIZACAO.FISH_COOCAR_DESP_GELO, TAB_FISH_COOP_CARACTERIZACAO.FISH_COOCAR_DESP_RANCHO, TAB_FISH_COOP_CARACTERIZACAO.FISH_COOCAR_DESP_OUTROS FROM TAB_FISH_FAMILIAS LEFT OUTER JOIN TAB_FISH_FAMILIAS_COMPOSICAO ON TAB_FISH_FAMILIAS_COMPOSICAO.FISH_FAM_ID = TAB_FISH_FAMILIAS.FISH_FAM_ID LEFT OUTER JOIN TAB_APOIO_PARENTESCO ON TAB_APOIO_PARENTESCO.ID = TAB_FISH_FAMILIAS_COMPOSICAO.FISH_FCOMP_PARENTESCO LEFT OUTER JOIN TAB_FISH_COOP_ENTREVISTA ON TAB_FISH_COOP_ENTREVISTA.FISH_FAM_ID = TAB_FISH_FAMILIAS.FISH_FAM_ID LEFT OUTER JOIN TAB_APOIO_ATIVECONOMICA AS TAB_APOIO_ATIVECONOMICA_PRINC ON TAB_APOIO_ATIVECONOMICA_PRINC.ID = TAB_FISH_COOP_ENTREVISTA.FISH_COOP_ATIVPRINCIPAL LEFT OUTER JOIN TAB_APOIO_ATIVECONOMICA AS TAB_APOIO_ATIVECONOMICA_SECOND ON TAB_APOIO_ATIVECONOMICA_SECOND.ID = TAB_FISH_COOP_ENTREVISTA.FISH_COOP_ATIVSECUNDARIA LEFT OUTER JOIN TAB_APOIO_BOOLEANO AS TAB_APOIO_BOOLEANO_ATIVPESCA ON TAB_APOIO_BOOLEANO_ATIVPESCA.ID = TAB_FISH_COOP_ENTREVISTA.FISH_COOP_ATIVPESCA LEFT OUTER JOIN TAB_APOIO_UNIDMED_TEMPO ON TAB_APOIO_UNIDMED_TEMPO.ID = TAB_FISH_COOP_ENTREVISTA.FISH_COOP_ATIVPESCAUNIT LEFT OUTER JOIN TAB_APOIO_ATIVPESCA ON TAB_APOIO_ATIVPESCA.ID = TAB_FISH_COOP_ENTREVISTA.FISH_COOP_ATIVPESCATIPO LEFT OUTER JOIN TAB_APOIO_BAIRROS ON TAB_APOIO_BAIRROS.ID = TAB_FISH_FAMILIAS.FISH_FAM_ENDURB_BAIRRO LEFT OUTER JOIN TAB_APOIO_MUNICIPIOS AS TAB_APOIO_MUNICIPIOS_URBANO ON TAB_APOIO_MUNICIPIOS_URBANO.ID = TAB_FISH_FAMILIAS.FISH_FAM_ENDURB_MUNIC LEFT OUTER JOIN TAB_APOIO_USOIMOVEL AS TAB_APOIO_USOIMOVEL_URBANO ON TAB_APOIO_USOIMOVEL_URBANO.ID = TAB_FISH_FAMILIAS.FISH_FAM_ENDURB_USO LEFT OUTER JOIN TAB_APOIO_LOCALIDADES ON TAB_APOIO_LOCALIDADES.ID = TAB_FISH_FAMILIAS.FISH_FAM_ENDRUR_LOCAL LEFT OUTER JOIN TAB_APOIO_MUNICIPIOS AS TAB_APOIO_MUNICIPIOS_RURAL ON TAB_APOIO_MUNICIPIOS_RURAL.ID = TAB_FISH_FAMILIAS.FISH_FAM_ENDRUR_MUNIC LEFT OUTER JOIN TAB_APOIO_USOIMOVEL AS TAB_APOIO_USOIMOVEL_RURAL ON TAB_APOIO_USOIMOVEL_RURAL.ID = TAB_FISH_FAMILIAS.FISH_FAM_ENDRUR_USO LEFT OUTER JOIN TAB_FISH_COOP_CARACTERIZACAO ON TAB_FISH_COOP_CARACTERIZACAO.FISH_FAM_ID = TAB_FISH_FAMILIAS.FISH_FAM_ID LEFT OUTER JOIN TAB_APOIO_BOOLEANO AS TAB_APOIO_BOOLEANO_PESCANDO ON TAB_APOIO_BOOLEANO_PESCANDO.ID = TAB_FISH_COOP_CARACTERIZACAO.FISH_COOCAR_PESCANDO LEFT OUTER JOIN TAB_APOIO_BOOLEANO AS TAB_APOIO_BOOLEANO_SOZINHO ON TAB_APOIO_BOOLEANO_SOZINHO.ID = TAB_FISH_COOP_CARACTERIZACAO.FISH_COOCAR_SOZINHO LEFT OUTER JOIN TAB_APOIO_BOOLEANO AS TAB_APOIO_BOOLEANO_ORNAMENTAL ON TAB_APOIO_BOOLEANO_ORNAMENTAL.ID = TAB_FISH_COOP_CARACTERIZACAO.FISH_COOCAR_ORNAMENTAL LEFT OUTER JOIN TAB_APOIO_BOOLEANO AS TAB_APOIO_BOOLEANO_CONSUMO ON TAB_APOIO_BOOLEANO_CONSUMO.ID = TAB_FISH_COOP_CARACTERIZACAO.FISH_COOCAR_CONSUMO LEFT OUTER JOIN TAB_APOIO_PESCA_TIPO ON TAB_APOIO_PESCA_TIPO.ID = TAB_FISH_COOP_CARACTERIZACAO.FISH_COOCAR_DESTINO LEFT OUTER JOIN VIEW_FISH_COOCAR_COMERCIO ON VIEW_FISH_COOCAR_COMERCIO.FISH_COOCAR_ID = TAB_FISH_COOP_CARACTERIZACAO.FISH_COOCAR_ID LEFT OUTER JOIN VIEW_FISH_COOCAR_LOCAIS ON VIEW_FISH_COOCAR_LOCAIS.FISH_COOCAR_ID = TAB_FISH_COOP_CARACTERIZACAO.FISH_COOCAR_ID WHERE TAB_FISH_FAMILIAS_COMPOSICAO.FISH_FCOMP_PARENTESCO = 1 AND TAB_FISH_COOP_ENTREVISTA.FISH_COOP_ID IS NOT NULL;", $db) or die(mysql_error()); 
+			while ($vetor=mysql_fetch_array($sql)) {
+				$tabela .= '<tr>';
+				$tabela .= '<td>'.$vetor['FISH_FAM_ID'].'</td>';
+				$tabela .= '<td>'.$vetor['FISH_FCOMP_NOME'].'</td>';
+				$tabela .= '<td>'.$vetor['FISH_FCOMP_RG_NUMERO'].'</td>';
+				$tabela .= '<td>'.$vetor['FISH_FCOMP_CPF_NUMERO'].'</td>';
+				$tabela .= '<td>'.$vetor['FISH_FCOMP_PARENTESCO_DESC'].'</td>';
+				$tabela .= '<td>'.$vetor['FISH_COOP_ATIVECON_PRINC_DESC'].'</td>';
+				$tabela .= '<td>'.$vetor['FISH_COOP_ATIVECON_SECOND_DESC'].'</td>';
+				$tabela .= '<td>'.$vetor['FISH_COOP_ATIVPESCA_DESC'].'</td>';
+				$tabela .= '<td>'.$vetor['FISH_COOP_ATIVPESCATEMPO'].'</td>';
+				$tabela .= '<td>'.$vetor['FISH_COOP_ATIVPESCAUNIT_DESC'].'</td>';
+				$tabela .= '<td>'.$vetor['FISH_COOP_ATIVPESCATIPO_DESC'].'</td>';
+				$tabela .= '<td>'.$vetor['FISH_FAM_TELEFONES'].'</td>';
+				$tabela .= '<td>'.$vetor['FISH_FAM_ENDURB_LOGR'].'</td>';
+				$tabela .= '<td>'.$vetor['FISH_FAM_ENDURB_LOCAL_DESC'].'</td>';
+				$tabela .= '<td>'.$vetor['FISH_FAM_ENDURB_MUNIC_DESC'].'</td>';
+				$tabela .= '<td>'.$vetor['FISH_FAM_ENDURB_COMPL'].'</td>';
+				$tabela .= '<td>'.$vetor['FISH_FAM_ENDURB_USO_DESC'].'</td>';
+				$tabela .= '<td>'.$vetor['FISH_FAM_ENDRUR_LOGR'].'</td>';
+				$tabela .= '<td>'.$vetor['FISH_FAM_ENDRUR_LOCAL_DESC'].'</td>';
+				$tabela .= '<td>'.$vetor['FISH_FAM_ENDRUR_MUNIC_DESC'].'</td>';
+				$tabela .= '<td>'.$vetor['FISH_FAM_ENDRUR_COMPL'].'</td>';
+				$tabela .= '<td>'.$vetor['FISH_FAM_ENDRUR_USO_DESC'].'</td>';
+				$tabela .= '<td>'.$vetor['FISH_COOCAR_PESCANDO_DESC'].'</td>';
+				$tabela .= '<td>'.$vetor['FISH_COOCAR_MOTIVO'].'</td>';
+				$tabela .= '<td>'.$vetor['FISH_COOCAR_SOZINHO_DESC'].'</td>';
+				$tabela .= '<td>'.$vetor['FISH_COOCAR_QTS_PESSOAS'].'</td>';
+				$tabela .= '<td>'.$vetor['FISH_COOCAR_QTS_FAMILIA'].'</td>';
+				$tabela .= '<td>'.$vetor['FISH_COOCAR_ORNAMENTAL_DESC'].'</td>';
+				$tabela .= '<td>'.$vetor['FISH_COOCAR_CONSUMO_DESC'].'</td>';
+				$tabela .= '<td>'.$vetor['FISH_COOCAR_DESTINO_DESC'].'</td>';
+				$tabela .= '<td>'.$vetor['FISH_COOCAR_DIAS'].'</td>';
+				$tabela .= '<td>'.$vetor['FISH_COOCAR_VEZES'].'</td>';
+				$tabela .= '<td>'.$vetor['FISH_COOCAR_LOCAIS'].'</td>';
+				$tabela .= '<td>'.$vetor['FISH_COOCAR_COMERCIO'].'</td>';
+				$tabela .= '<td>'.number_format($vetor['FISH_COOCAR_DESP_COMBS'],2,',','.').'</td>';
+				$tabela .= '<td>'.number_format($vetor['FISH_COOCAR_DESP_GELO'],2,',','.').'</td>';
+				$tabela .= '<td>'.number_format($vetor['FISH_COOCAR_DESP_RANCHO'],2,',','.').'</td>';
+				$tabela .= '<td>'.number_format($vetor['FISH_COOCAR_DESP_OUTROS'],2,',','.').'</td>';
+				$tabela .= '</tr>';
+			}
+			$tabela .= '</tbody>';
+			$tabela .= '</table>';
+			header("Pragma: no-cache");
+			header("Content-Type: application/msexcel; charset=utf-8");
+			header("Content-Disposition: attachment; filename=excel_fish_cooperativa_dadosgerais.xls");
+			header("Content-Description: PHP Generated Data" );			
+			header("Cache-Control: no-cache, must-revalidate");
+			header("Content-type: application/force-download");  
+			echo $tabela;
+		}
+	}
+?>
